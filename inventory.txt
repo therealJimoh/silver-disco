@@ -1,2 +1,2 @@
-[all]
-35.92.185.81
+[web]
+ec2-35-92-185-81.us-west-2.compute.amazonaws.com ansible_user=ubuntu

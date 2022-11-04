@@ -28,22 +28,28 @@
     dest: /tmp/composer-setup.php
 
 - name: Install composer
-  command:
-    cmd: /usr/bin/php /tmp/composer-setup.php
-    creates: composer.phar
+  shell: cat /tmp/installer | php -- --install-dir=/usr/local/bin
+  args:
+    creates: /usr/local/bin/composer
 
-- name: copy composer to executable
-  become: true
-  copy:
-    src: composer.phar
-    dest: /usr/local/bin/composer
-    remote_scr: yes
-    mode: '0755'
+# - name: copy composer to executable
+#   become: true
+#   copy:
+#     src: composer.phar
+#     dest: /usr/local/bin/composer
+#     remote_scr: yes
+#     mode: '0755'
 
-- name: remove phar
+- name: rename composer.phar
+  shell: mv ./composer.phar /usr/local/bin/composer
+  args:
+    creates: /usr/local/bin/composer
+
+- name: make composer executable
   file:
-    path: composer.phar
-    state: absent
+    path: /usr/local/bin/composer
+    mode: 0755
+    state: file
 
 - name: install Apache2 server
   apt: 

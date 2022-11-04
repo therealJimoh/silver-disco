@@ -1,15 +1,19 @@
 ---
 
-- name: "configuration of server play"
-  hosts: all
+- name: configuration of server play
+  hosts: web
   become: true
   become_user: root
   become_method: sudo
   gather_facts: false
+  vars_files:
+    - all.yml
+  vars:
 
 
   pre_tasks:
-    - nmae: "install git"
+    - name: install git
+      become: true
       apt:
         name: git
         state: present
