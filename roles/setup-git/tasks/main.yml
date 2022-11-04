@@ -1,28 +1,28 @@
 ---
-- name: Setup and clone project repo
+- name: Checkout code from project repo
   git:
-    dest: "{{ remote_www_root}}//{{ app_root}}"
+    dest: "{{ remote_www_root}}//{{ app_path}}"
     repo: "{{git_repo}}"
 
 
 - name: Remote app root and right permission
   file:
-    path: "{{ remote_www_root}}//{{ app_root }}"
+    path: "{{ remote_www_root}}//{{ app_path }}"
     state: directory
     mode: '0755'
-    owner: "{{ remote_user}}"
-    group: "{{ remote_user}}"
+    owner: "{{ root_user}}"
+    group: "{{ root_user}}"
 
 - name: Setting up permission and directory for ww-data
   file:
-    path: "{{ remote_www_root }}//{{app_root}}//bootstrap/cache"
+    path: "{{ remote_www_root }}//{{app_path}}//bootstrap/cache"
     state: directory
     mode: 0777
-    owner: "{{remote_user}}"
+    owner: "{{root_user}}"
 
 - name: Setting up permission and directory for www-data on stroage
   file:
-    path: "{{remote_www_root}}//{{app_root}}/storage/logs/laravel.log"
+    path: "{{remote_www_root}}//{{app_path}}/storage/logs/laravel.log"
     mode: 0777
-    owner: "{{ remote_user }}"
+    owner: "{{ root_user }}"
     state: directory
