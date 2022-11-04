@@ -1,0 +1,68 @@
+---
+- name: upgrade and update packages
+  become: yes
+  apt:
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 86400
+
+- name: remove unused dependencies
+  apt:
+    autoremove: yes
+  
+- name: Add php repository
+  apt_repository:
+    repo: ppa:ondrej/php
+
+- name: Install php
+  apt:
+    name: php{{php_version}}
+    state: latest
+
+- name: php version
+  command: php -v
+
+- name: Download php-composer
+  get_url:
+    url: https://getcomposer.org/installer
+    dest: /tmp/composer-setup.php
+
+- name: Install composer
+  command:
+    cmd: /usr/bin/php /tmp/composer-setup.php
+    creates: composer.phar
+
+- name: copy composer to executable
+  become: true
+  copy:
+    src: composer.phar
+    dest: /usr/local/bin/composer
+    remote_scr: yes
+    mode: '0755'
+
+- name: remove phar
+  file:
+    path: composer.phar
+    state: absent
+
+- name: install Apache2 server
+  apt: 
+    name: apache2
+    state: present
+    update_cache: yes
+
+- name: copy vhost
+  template:
+    src: "laravel.conf.j2"
+    dest: "{{path_vhost}}"
+  
+- name: Enable new site
+  file:
+    src: "etc/apache2/sites-available/laravel.conf"
+    dest: "etc/apache2/sites-enabled/laravel.conf"
+    state: link
+
+- name: Remove default apache vhost config from site-enables
+  file:
+    path: "/etc/apache2/sites-enabled/000-default.conf"
+    state: abesent
