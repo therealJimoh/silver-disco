@@ -2,13 +2,12 @@
 
 - name: configuration of server play
   hosts: web
-  become: true
+  become: yes
   become_user: root
   become_method: sudo
   gather_facts: false
   vars_files:
     - all.yml
-  vars:
 
 
   pre_tasks:
@@ -21,4 +20,3 @@
   roles:
     - setup-git
     - configure-server
-    - mysql

@@ -1,9 +1,71 @@
 ---
-- name: Install Mysql
-  apt:
-    name: pkg={{ item }}
-    state: latest
-    update_cache: yes
-    cache_valid_time: 3600
+# - name: Install Mysql
+#   apt:
+#     name: "{{ item }}"
+#     state: latest
+#     update_cache: yes
+#     cache_valid_time: 3600
+#   with_items:
+#     - mysql-server
+#     - python3-pymysql
+#     # - mysql-client
+#     # - python3-mysqldb
+
+- name: Start Mysql service
+  service:
+    name: mysql
+    state: started
+    enabled: yes
+
+# - name: Update and configure password for all root account
+#   mysql_user:
+#     name: root
+#     priv: '*.*:ALL,GRANT'
+#     password: "{{ mysql_password }}"
+#     login_unix_socket: /var/run/mysqld/mysqld.sock
+#   no_log: false
+#   notify: Restart MySQL
+
+# - name: Create `/root/.my.cnf`  with root password credentials
+#   template:
+#     src:  my.cnf.j2
+#     dest: /root/.my.cnf
+#     owner: root
+#     mode: 0600
+#   become: yes
+#   notify: Restart MySQL
+
+
+- name: Configure MySQL Password Lifetime
+  lineinfile: 
+    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+    regexp: "default_password_lifetime/s*=.*"
+    line: "default_password_lifetime = 0"
+    state: present
+    backrefs: yes
+
+- name: Configure MySQL listen IP address
+  lineinfile: 
+    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+    regexp: "bind-address/s*=.*"
+    line:
+      bind-address: "{{ mysql_bind_address }}"
+    state: present
+    backrefs: yes
+
+
+- name: Set MySQL root user password
+  mysql_user: 
+    name: root
+    password: "{{ mysql_password }}" 
+    host: "{{ item }}" 
+    priv: '*.*:ALL,GRANT'
+    state: present
   with_items:
-    - mysql-server-
+    - 127.0.0.1
+    - ::1
+    - localhost
+
+# - name: Configure MySQL for easy access as root user
+#   action: template src=root.my.cnf.j2 dest=/root/.my.cnf mode=0600
+

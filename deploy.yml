@@ -1,6 +1,13 @@
-- name: "Deployment"
-  hosts: all
-  become: true
+---
+- name: Deployment
+  hosts: web
+  become: yes
   become_user: root
   become_method: sudo
   gather_facts: false
+  vars_files:
+    - all.yml
+
+  roles:
+    - mysql
+    - deploy

@@ -19,8 +19,8 @@
     name: php{{php_version}}
     state: latest
 
-- name: php version
-  command: php -v
+# - name: php version
+#   command: php -v
 
 - name: Download php-composer
   get_url:
@@ -57,10 +57,12 @@
 - name: Enable new site
   file:
     src: "/etc/apache2/sites-available/laravel.conf"
-    dest: "/etc/apache2/sites-enabled/000-default.conf"
+    dest: "/etc/apache2/sites-enabled/laravel.conf"
     state: link
+    notify: Reload Apache
 
-- name: Remove default apache vhost config from site-enables
+- name: Remove default apache config from site-enables
   file:
     path: "/etc/apache2/sites-enabled/000-default.conf"
     state: absent
+    notify: Reload Apache

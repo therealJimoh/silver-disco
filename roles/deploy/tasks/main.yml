@@ -1,0 +1,26 @@
+---
+
+- name: Configure and copy the env file
+  template:
+    src: .env.j2
+    dest: "{{remote_www_root }}//{{app_path}}"
+  
+- name: Install laravel
+  become: false
+  composer:
+    command: install
+    working_dir: "{{remote_www_root}}//{{ app_path }}"
+  tags: ['composer:install']
+  ignore_errors: yes
+
+- name: Generate key
+  command: "/usr/bin/php {{remote_www_root}}//{{app_path}}/artisan key:generate"
+  tags: ['laravel', 'artisan:key']
+
+- name: Storage set up
+  command: "/usr/bin/php {{remote_www_root}}//{{app_path}}/artisan storage:link"
+  tags: ['laravel', 'artisan:storage'] 
+
+- name: Run migrations
+  command: "/usr/bin/php {{remote_www_root}}//{{app_path}}/artisan migrate --seed"
+  tags: ['laravel', 'artisan:migrate'] 

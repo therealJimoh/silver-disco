@@ -4,18 +4,15 @@ root_user: ubuntu
 remote_www_root: /var/www/
 app_path: laravel-realworld-example-app
 git_repo: https://github.com/therealJimoh/laravel-realworld-example-app.git
-
-
 path_vhost: /etc/apache2/sites-available/laravel.conf
-
 php_version: 8.1
 
 
 
-instance_key: ~/.ssh/laravelkey.pem
-
+mysql_root_password: MYSQL_ROOT_PASSWORD
 mysql_host: 127.0.0.1
-mysql_port: 
+mysql_port: 3306
 mysql_user: web
 mysql_password: password
 mysql_database: laravel
+mysql_bind_address: 127.0.0.1
