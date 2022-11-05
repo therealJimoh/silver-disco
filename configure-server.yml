@@ -5,7 +5,7 @@
   become: yes
   become_user: root
   become_method: sudo
-  gather_facts: false
+  gather_facts: true
   vars_files:
     - all.yml
 

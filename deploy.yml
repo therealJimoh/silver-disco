@@ -4,9 +4,18 @@
   become: yes
   become_user: root
   become_method: sudo
-  gather_facts: false
+  gather_facts: true
   vars_files:
     - all.yml
+    - Archlinux.yml
+    - Debian-10.yml
+    - Debian-11.yml
+    - Debian.yml
+    - RedHat-7.yml
+    - RedHat-8.yml
+    - RedHat-9.yml
+    - def.yml
+    
 
   roles:
     - mysql

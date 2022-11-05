@@ -2,4 +2,4 @@
 ansible_ssh_private_key_file=~/.ssh/laravelkey.pem
 
 [web]
-ec2-35-92-185-81.us-west-2.compute.amazonaws.com ansible_user=ubuntu
+35.88.133.71 ansible_user=ubuntu

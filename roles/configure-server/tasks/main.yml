@@ -16,21 +16,24 @@
 
 - name: Install php
   apt:
-    name: php{{php_version}}
+    name: "{{item}}"
     state: latest
-
-# - name: php version
-#   command: php -v
-
+    update_cache: yes
+  with_items:
+    - php7.1-curl
+    - php8.1
+    - php-mbstring
+    - php-curl
+  
 - name: Download php-composer
   get_url:
     url: https://getcomposer.org/installer
     dest: /tmp/composer-setup.php
 
 - name: Install composer
-  shell: cat /tmp/installer | php -- --install-dir=/usr/local/bin
-  args:
-    creates: /usr/local/bin/composer
+  command:
+    cmd: /usr/bin/php /tmp/composer-setup.php
+    creates: composer.phar
 
 - name: rename composer.phar
   shell: mv ./composer.phar /usr/local/bin/composer
@@ -56,13 +59,11 @@
   
 - name: Enable new site
   file:
-    src: "/etc/apache2/sites-available/laravel.conf"
-    dest: "/etc/apache2/sites-enabled/laravel.conf"
+    src: /etc/apache2/sites-available/laravel.conf
+    dest: /etc/apache2/sites-enabled/laravel.conf
     state: link
-    notify: Reload Apache
 
 - name: Remove default apache config from site-enables
   file:
-    path: "/etc/apache2/sites-enabled/000-default.conf"
+    path: /etc/apache2/sites-enabled/000-default.conf
     state: absent
-    notify: Reload Apache
